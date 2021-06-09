@@ -8,13 +8,9 @@ import requests
 
 class Text():
     def __init__(self):
-        #self.text = text
         self.lower_table = str.maketrans("ABCÇDEFGĞHİIJKLMNOÖPRSŞTUÜVYZWXQ","abcçdefgğhiıjklmnoöprsştuüvyzwxq")
         self.noktalama_isaretleri = np.array(["...",".","?","!",":"])
-        self.SENT_ANALYSIS_API_URL = "https://api-inference.huggingface.co/models/savasy/bert-base-turkish-sentiment-cased"
-        self.sent_analysis_headers = {"Authorization": "Bearer api_gxjjPVmHDGvBlYfwPqRkzgecnMbPXjWAaY"}
-        self.GENERATE_API_URL = "https://api-inference.huggingface.co/models/adresgezgini/turkish-gpt-2"
-        self.generate_headers = {"Authorization": "Bearer api_gxjjPVmHDGvBlYfwPqRkzgecnMbPXjWAaY"}
+
         
     
     def lower(self, text):
@@ -85,7 +81,14 @@ class Text():
         
         return self.removePunc(text).split()
     
-        
+class trainedModel():   
+    
+    def __init__(self):
+        self.SENT_ANALYSIS_API_URL = "https://api-inference.huggingface.co/models/savasy/bert-base-turkish-sentiment-cased"
+        self.sent_analysis_headers = {"Authorization": "Bearer api_gxjjPVmHDGvBlYfwPqRkzgecnMbPXjWAaY"}
+        self.GENERATE_API_URL = "https://api-inference.huggingface.co/models/adresgezgini/turkish-gpt-2"
+        self.generate_headers = {"Authorization": "Bearer api_gxjjPVmHDGvBlYfwPqRkzgecnMbPXjWAaY"}
+    
     def sentAnalysis(self,text):
         """
         Calculates the emotion of the input using the trained model. It outputs label and score value. (Eğitilmiş model kullanılarak girdinin duygusunu hesaplar. Çıktı olarak duygu ve skor değerini verir.)
@@ -135,6 +138,14 @@ class Text():
         return result["generated_text"]
 
    
+class Twitter(Text):
+    def __init__(self):
+        pass
+    
     
 deneme = Text()
+model = trainedModel()
+label, score = model.sentAnalysis("Bugün hava güzel ")
+print(label)
+print(score)
 print(deneme.lower("Sakince arkana dön bir bak"))
