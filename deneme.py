@@ -203,7 +203,38 @@ class Twitter(Text):
         pass
     
     def removeHastag(self, tweet):
+        """
+        Remove hastag in a tweet. (Tweet içerisindeki hastag'i kaldırır.)
+
+        Example: 
+        
+        Input:
+        
+        \ttext [string] => "Merhaba #Hello"
+        
+        Output:
+        
+        \ttext [string] => "Merhaba"
+        """
         return re.sub(r"#\S+","", tweet)
+    
+    
+    def removeMention(self, tweet):
+        """
+        Remove mention in a tweet. (Tweet içerisindeki mention'ı kaldırır.)
+
+        Example: 
+        
+        Input:
+        
+        \ttext [string] => "Merhaba @example"
+        
+        Output:
+        
+        \ttext [string] => "Merhaba"
+        """
+
+        return re.sub(r"@\S+","", tweet)
     
     
 deneme = Text()
