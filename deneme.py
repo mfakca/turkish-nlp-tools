@@ -234,13 +234,34 @@ class Twitter(Text):
         \ttext [string] => "Merhaba"
         """
 
-        return re.sub(r"@\S+","", tweet)
+        return re.sub(r"@\S+","", tweet).strip()
+    
+    def removeRT(self, tweet):
+        """
+        Remove retweet in a tweet. (Tweet içerisindeki retweet'i kaldırır.)
+
+        Example: 
+        
+        Input:
+        
+        \ttext [string] => "rt Bugün hava çok güzel"
+        
+        Output:
+        
+        \ttext [string] => "Bugün hava çok güzel"
+        """
+
+        return re.sub(r"\brt\b","", tweet)
     
     
 deneme = Text()
 model = trainedModel()
+tweet = Twitter()
 #label, score = model.sentAnalysis("Bugün hava güzel 😊")
 #print(label)
 #print(score)
 text_ = deneme.justValid("Bugün hava güzel 😊")
 print(text_)
+
+tweet_ = tweet.removeHastag("günaydın #Selam ")
+print(tweet_)
