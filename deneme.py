@@ -7,6 +7,8 @@ import requests
 
 
 class Text():
+    
+    
     def __init__(self):
         self.lower_table = str.maketrans("ABCÇDEFGĞHİIJKLMNOÖPRSŞTUÜVYZWXQ","abcçdefgğhiıjklmnoöprsştuüvyzwxq")
         self.noktalama_isaretleri = np.array(["...",".","?","!",":"])
@@ -81,10 +83,67 @@ class Text():
         
         return self.removePunc(text).split()
     
+    def dropEmail(self, text):
+        """
+        Remove email in input text. (Girdideki emailleri atar.)
+
+        Example: 
+        
+        Input:
+        
+        \ttext [string] => "example@example.com adresinden ulaşabilirsiniz."
+        
+        Output:
+        
+        \ttext [string] => "adresinden ulaşabilirsiniz."
+        """
+        
+        return re.sub(r"(\S*@\S*\s?)","",text)
+    
+    
+    
+    def dropURL(self, text):
+        """
+        Remove URL in input text. (Girdideki URLleri atar.)
+
+        Example: 
+        
+        Input:
+        
+        \ttext [string] => "www.example.com adresinden ulaşabilirsiniz."
+        
+        Output:
+        
+        \ttext [string] => "adresinden ulaşabilirsiniz."
+        """
+        text = re.sub(r'http\S+', '', text)
+        text = re.sub(r'www.\S+', '', text)
+        return re.sub(r"[^\s]*(?:\.(com|org)(\S*))","",text)
+    
+    
+    
+    def justValid(self, text):
+        """
+        It just keeps the valid characters. You can use droping emoji. (Sadece doğru karakterleri tutar. Emojileri kaldırırken kullanabilirsiniz.)
+
+        Example: 
+        
+        Input:
+        
+        \ttext [string] => "Hi! 😊"
+        
+        Output:
+        
+        \ttext [string] => "Hi! "
+        """
+
+        return re.sub(r'[^\x00-\x7fğüışöçĞÜIİŞÖÇ0-9]','',text)
+    
+    
 class trainedModel():   
     
     def __init__(self):
-        self.SENT_ANALYSIS_API_URL = "https://api-inference.huggingface.co/models/savasy/bert-base-turkish-sentiment-cased"
+        self.SENT_ANALYSIS_API_URL = "https://api-inference.huggingface.co/models/adresgezgini/Finetuned-SentiBERtr-Pos-Neg-Reviews"
         self.sent_analysis_headers = {"Authorization": "Bearer api_gxjjPVmHDGvBlYfwPqRkzgecnMbPXjWAaY"}
         self.GENERATE_API_URL = "https://api-inference.huggingface.co/models/adresgezgini/turkish-gpt-2"
         self.generate_headers = {"Authorization": "Bearer api_gxjjPVmHDGvBlYfwPqRkzgecnMbPXjWAaY"}
@@ -109,6 +168,7 @@ class trainedModel():
         
         data = json.dumps({"inputs":text})
         response = requests.request("POST", self.SENT_ANALYSIS_API_URL, headers=self.sent_analysis_headers, data=data)
+        
         result = json.loads(response.content.decode("utf-8"))[0][0]
         
         return result["label"], result["score"]
@@ -142,10 +202,14 @@ class Twitter(Text):
     def __init__(self):
         pass
     
+    def removeHastag(self, tweet):
+        return re.sub(r"#\S+","", tweet)
+    
     
 deneme = Text()
 model = trainedModel()
-label, score = model.sentAnalysis("Bugün hava güzel ")
-print(label)
-print(score)
-print(deneme.lower("Sakince arkana dön bir bak"))
+#label, score = model.sentAnalysis("Bugün hava güzel 😊")
+#print(label)
+#print(score)
+text_ = deneme.justValid("Bugün hava güzel 😊")
+print(text_)
